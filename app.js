@@ -27,6 +27,10 @@ class App {
             this.openModal(event);
         });
 
+        document.body.addEventListener('mouseover', event => {
+            this.openTooltip(event)
+        })
+
         this.$form.addEventListener("submit", event => {
             event.preventDefault();
             const title = this.$noteTitle.value;
@@ -91,6 +95,10 @@ class App {
         this.$modal.classList.toggle('open-modal');
     }
 
+    openTooltip(event) {
+
+    }
+
     addNote({ title, text }) {
         const newNote = {
             title,
@@ -133,8 +141,8 @@ class App {
             <div class="note-text">${note.text}</div>
             <div class="toolbar-container">
               <div class="toolbar">
-                <img class="toolbar-color" src="https://icon.now.sh/palette">
-                <img class="toolbar-delete" src="https://icon.now.sh/delete">
+                <img class="toolbar-color" src="./images/color.png"/>
+                <img class="toolbar-delete" src="./images/delete.png">
               </div>
             </div>
           </div>
