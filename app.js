@@ -1,9 +1,9 @@
 class App {
     constructor() {
         this.notes = [];
-        this.title = '';
-        this.text = '';
-        this.id = '';
+        this.title = "";
+        this.text = "";
+        this.id = "";
 
         this.$placeholder = document.querySelector("#placeholder");
         this.$form = document.querySelector("#form");
@@ -15,7 +15,8 @@ class App {
         this.$modal = document.querySelector(".modal");
         this.$modalTitle = document.querySelector(".modal-title");
         this.$modalText = document.querySelector(".modal-text");
-        this.$modalCloseButton = document.querySelector('.modal-close-button');
+        this.$modalCloseButton = document.querySelector(".modal-close-button");
+        this.$colorTooltip = document.querySelector('#color-tooltip');
 
         this.addEventListeners();
     }
@@ -28,7 +29,26 @@ class App {
         });
 
         document.body.addEventListener('mouseover', event => {
-            this.openTooltip(event)
+            this.openTooltip(event);
+        });
+
+        document.body.addEventListener('mouseout', event => {
+            this.closeTooltip(event);
+        });
+
+        this.$colorTooltip.addEventListener('mouseover', function () {
+            this.style.display = 'flex'
+        })
+
+        this.$colorTooltip.addEventListener('mouseout', function () {
+            this.style.display = 'none'
+        })
+
+        this.$colorTooltip.addEventListener('click', event => {
+            const color = event.target.dataset.color;
+            if (color) {
+                this.editNoteColor(color)
+            }
         })
 
         this.$form.addEventListener("submit", event => {
@@ -47,9 +67,9 @@ class App {
             this.closeForm();
         });
 
-        this.$modalCloseButton.addEventListener('click', event => {
+        this.$modalCloseButton.addEventListener("click", event => {
             this.closeModal(event);
-        })
+        });
     }
 
     handleFormClick(event) {
@@ -83,8 +103,8 @@ class App {
     }
 
     openModal(event) {
-        if (event.target.closest('.note')) {
-            this.$modal.classList.toggle('open-modal');
+        if (event.target.closest(".note")) {
+            this.$modal.classList.toggle("open-modal");
             this.$modalTitle.value = this.title;
             this.$modalText.value = this.text;
         }
@@ -92,11 +112,22 @@ class App {
 
     closeModal(event) {
         this.editNote();
-        this.$modal.classList.toggle('open-modal');
+        this.$modal.classList.toggle("open-modal");
     }
 
     openTooltip(event) {
+        if (!event.target.matches('.toolbar-color')) return;
+        this.id = event.target.dataset.id;
+        const noteCoords = event.target.getBoundingClientRect();
+        const horizontal = noteCoords.left + window.scrollX
+        const vertical = noteCoords.top + window.scrollY;
+        this.$colorTooltip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
+        this.$colorTooltip.style.display = 'flex';
+    }
 
+    closeTooltip(event) {
+        if (!event.target.matches('.toolbar-color')) return;
+        this.$colorTooltip.style.display = 'none'
     }
 
     addNote({ title, text }) {
@@ -120,8 +151,15 @@ class App {
         this.displayNotes();
     }
 
+    editNoteColor(color) {
+        this.notes = this.notes.map(note =>
+            note.id === Number(this.id) ? { ...note, color } : note
+        );
+        this.displayNotes();
+    }
+
     selectNote(event) {
-        const $selectedNote = event.target.closest('.note');
+        const $selectedNote = event.target.closest(".note");
         if (!$selectedNote) return;
         const [$noteTitle, $noteText] = $selectedNote.children;
         this.title = $noteTitle.innerText;
@@ -136,12 +174,13 @@ class App {
         this.$notes.innerHTML = this.notes
             .map(
                 note => `
-          <div style="background: ${note.color};" class="note" data-id="${note.id}">
+          <div style="background: ${note.color};" class="note" data-id="${note.id
+                    }">
             <div class="${note.title && "note-title"}">${note.title}</div>
             <div class="note-text">${note.text}</div>
             <div class="toolbar-container">
               <div class="toolbar">
-                <img class="toolbar-color" src="./images/color.png"/>
+                <img class="toolbar-color" data-id=${note.id} src="./images/color.png">
                 <img class="toolbar-delete" src="./images/delete.png">
               </div>
             </div>
