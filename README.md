@@ -1,4 +1,4 @@
-# Google Keep Clone (currently in a progress)
+# Google Keep Clone
    
 * DOM Manipulation, events
 * JS Classes
