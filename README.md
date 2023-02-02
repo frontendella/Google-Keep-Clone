@@ -6,7 +6,7 @@
 * Data is saved with LocalStorage
 
 
-Project made with [Scrimba](https://scrimba.com/allcourses) help
+Project is made with the help of [Scrimba](https://scrimba.com/allcourses) learning resources
       
      
 
